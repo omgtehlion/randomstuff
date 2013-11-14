@@ -110,8 +110,14 @@ namespace xops
                 var a = ue.Arg = SimplifyOne(ue.Arg);
                 if (ue.Op == "~") {
                     var aue = ue.Arg as UnaryExpr;
-                    if (aue != null && aue.Op == "~")
-                        return aue.Arg;
+                    if (aue != null) {
+                        if (aue.Op == "~")
+                            return aue.Arg;
+                    } else if (ue.Arg.Is(false)) {
+                        return new ConstExpr { Const = true };
+                    } else if (ue.Arg.Is(true)) {
+                        return new ConstExpr { Const = false };
+                    }
                 }
             }
             return expr;
